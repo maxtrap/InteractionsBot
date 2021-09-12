@@ -1,6 +1,7 @@
 package tictactoe.eventhandling;
 
 import eventhandling.EventHandler;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import tictactoe.guts.TicTacToeGame;
 import tictactoe.view.TicTacToeDisplay;
@@ -21,4 +22,10 @@ public class TicTacToeEventHandler extends EventHandler {
         }
     }
 
+    @Override
+    public void handleButton(ButtonClickEvent event) {
+        switch (event.getComponentId()) {
+
+        }
+    }
 }
