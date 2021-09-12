@@ -2,6 +2,7 @@ package tictactoe.view;
 
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -26,6 +27,15 @@ public class TicTacToeDisplay {
         this.gameBoard = gameBoard;
         event.reply(createTicTacToeMessage()).queue();
     }
+
+
+    public void showMove(ButtonClickEvent event) {
+        event.editMessage("edited!").queue();
+    }
+
+
+
+
 
     private Message createTicTacToeMessage() {
         MessageBuilder builder = new MessageBuilder("Tic-tac-toe! You vs the computer");
