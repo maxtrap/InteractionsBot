@@ -9,20 +9,29 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import tictactoe.eventhandling.TicTacToeEventHandler;
 
 import javax.security.auth.login.LoginException;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 public class BotController {
 
     private static JDA jda;
 
-    public static void main(String[] args) throws LoginException, InterruptedException {
-        jda = JDABuilder.createDefault("ODg2MzQ2MDk4MzcxODU4NTE0.YT0QIQ.zq1J2DR5KzlsnA4pD7odj4DHGyU")
+    public static void main(String[] args) throws LoginException, InterruptedException, IOException {
+        jda = JDABuilder.createDefault(getBotToken())
                 .addEventListeners(new EventListener(new BotController()))
                 .build();
         jda.awaitReady();
 
 //        createCommands();
+    }
+
+    private static String getBotToken() throws IOException {
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("config/config.properties"));
+        return properties.getProperty("token");
     }
 
     private static void createCommands() {
