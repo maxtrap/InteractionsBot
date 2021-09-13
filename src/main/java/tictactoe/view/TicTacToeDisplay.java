@@ -3,8 +3,8 @@ package tictactoe.view;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
@@ -24,21 +24,32 @@ public class TicTacToeDisplay {
 
     public TicTacToeDisplay(SlashCommandEvent event, GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        event.reply(createTicTacToeMessage(event.getMember().getAsMention())).queue();
+        event.reply(createTicTacToeMessage( String.format("Welcome %s to Tic-tac-toe! Press any button to start.", event.getMember().getAsMention()) )).queue();
     }
 
 
-    public void showMove(ButtonClickEvent event, Move move) {
-        event.editMessage(String.format("Current turn: %s", getEmojiStringFromEntry(move.nextTurn()))).queue();
-        event.editButton(getButtonWithEntry(move.move(), move.row(), move.col())).queue();
+    public void showMove(InteractionHook hook, Move move) {
+        showMove(hook, move, null);
+    }
+
+    public void showMove(InteractionHook hook, Move move, Runnable thenRun) {
+        hook.editOriginal(
+                createTicTacToeMessage(
+                        String.format(
+                                "Playing tic-tac-toe against %s | Current turn: %s", hook.getInteraction().getMember().getAsMention(), getEmojiStringFromEntry(move.nextTurn())
+                        )
+                )
+        ).queue(message -> {
+            if (thenRun != null)
+                thenRun.run();
+        });
     }
 
 
 
 
-
-    private Message createTicTacToeMessage(String nameOfPlayer) {
-        MessageBuilder builder = new MessageBuilder(String.format("Welcome %s to Tic-tac-toe! Press any button to start.", nameOfPlayer));
+    private Message createTicTacToeMessage(String mainMessage) {
+        MessageBuilder builder = new MessageBuilder(mainMessage);
 
         builder.setActionRows(createActionRows());
 

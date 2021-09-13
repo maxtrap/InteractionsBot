@@ -22,9 +22,23 @@ public class TicTacToeGame {
         thenShow.accept(gameboard);
     }
 
-    public void move(GridPosition position, Consumer<? super Move> thenShow) {
+    public void playerMove(GridPosition position, Consumer<? super Move> thenShow) {
         gameboard.move(turn, position.row(), position.col());
         Move move = new Move(turn, position);
+        switchTurns();
+        thenShow.accept(move);
+    }
+
+    public void computerMove(Consumer<? super Move> thenShow) {
+        int r;
+        int c;
+        do {
+            r = (int) (Math.random() * GRID_SIZE);
+            c = (int) (Math.random() * GRID_SIZE);
+        } while (gameboard.getEntry(r, c) != CellEntry.EMPTY);
+
+        gameboard.move(turn, r, c);
+        Move move = new Move(turn, new GridPosition(r, c));
         switchTurns();
         thenShow.accept(move);
     }
