@@ -22,14 +22,15 @@ public class TicTacToeGame {
         thenShow.accept(gameboard);
     }
 
-    public void playerMove(GridPosition position, Consumer<? super Move> thenShow) {
+    public Move playerMove(String gridPositionId) {
+        GridPosition position = GridPosition.getGridPositionFromId(gridPositionId);
         gameboard.move(turn, position.row(), position.col());
         Move move = new Move(turn, position);
         switchTurns();
-        thenShow.accept(move);
+        return move;
     }
 
-    public void computerMove(Consumer<? super Move> thenShow) {
+    public Move computerMove() {
         int r;
         int c;
         do {
@@ -40,7 +41,7 @@ public class TicTacToeGame {
         gameboard.move(turn, r, c);
         Move move = new Move(turn, new GridPosition(r, c));
         switchTurns();
-        thenShow.accept(move);
+        return move;
     }
 
     private void switchTurns() {

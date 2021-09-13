@@ -36,7 +36,9 @@ public class TicTacToeDisplay {
         hook.editOriginal(
                 createTicTacToeMessage(
                         String.format(
-                                "Playing tic-tac-toe against %s | Current turn: %s", hook.getInteraction().getMember().getAsMention(), getEmojiStringFromEntry(move.nextTurn())
+                                "Playing tic-tac-toe against %s | Current turn: %s",
+                                hook.getInteraction().getMember().getAsMention(),
+                                getEmojiStringFromEntry(move.nextTurn())
                         )
                 )
         ).queue(message -> {
