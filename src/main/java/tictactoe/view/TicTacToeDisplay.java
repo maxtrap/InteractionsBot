@@ -8,10 +8,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
-import tictactoe.guts.CellEntry;
-import tictactoe.guts.GameBoard;
-import tictactoe.guts.Move;
-import tictactoe.guts.TicTacToeGame;
+import tictactoe.guts.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,12 +24,12 @@ public class TicTacToeDisplay {
 
     public TicTacToeDisplay(SlashCommandEvent event, GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        event.reply(createTicTacToeMessage()).queue();
+        event.reply(createTicTacToeMessage(event.getMember().getAsMention())).queue();
     }
 
 
     public void showMove(ButtonClickEvent event, Move move) {
-        event.editMessage("edited!").queue();
+        event.editMessage(String.format("Current turn: %s", getEmojiStringFromEntry(move.nextTurn()))).queue();
         event.editButton(getButtonWithEntry(move.move(), move.row(), move.col())).queue();
     }
 
@@ -40,8 +37,8 @@ public class TicTacToeDisplay {
 
 
 
-    private Message createTicTacToeMessage() {
-        MessageBuilder builder = new MessageBuilder("Tic-tac-toe! You vs the computer");
+    private Message createTicTacToeMessage(String nameOfPlayer) {
+        MessageBuilder builder = new MessageBuilder(String.format("Welcome %s to Tic-tac-toe! Press any button to start.", nameOfPlayer));
 
         builder.setActionRows(createActionRows());
 
@@ -70,9 +67,17 @@ public class TicTacToeDisplay {
 
     private static Button getButtonWithEntry(CellEntry entry, int row, int col) {
         return switch (entry) {
-            case X -> Button.secondary(TicTacToeGame.getGridPositionId(row, col), Emoji.fromMarkdown(X_EMOJI));
-            case O -> Button.secondary(TicTacToeGame.getGridPositionId(row, col), Emoji.fromMarkdown(O_EMOJI));
-            default -> Button.secondary(TicTacToeGame.getGridPositionId(row, col), "\u200B");
+            case X -> Button.secondary(GridPosition.getGridPositionId(row, col), Emoji.fromMarkdown(X_EMOJI));
+            case O -> Button.secondary(GridPosition.getGridPositionId(row, col), Emoji.fromMarkdown(O_EMOJI));
+            default -> Button.secondary(GridPosition.getGridPositionId(row, col), "\u200B");
+        };
+    }
+    
+    private static String getEmojiStringFromEntry(CellEntry entry) {
+        return switch (entry) {
+            case X -> X_EMOJI;
+            case O -> O_EMOJI;
+            default -> null;
         };
     }
 

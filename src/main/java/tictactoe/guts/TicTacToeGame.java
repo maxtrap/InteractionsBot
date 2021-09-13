@@ -30,13 +30,12 @@ public class TicTacToeGame {
     }
 
     private void switchTurns() {
-        turn = turn == CellEntry.X ? CellEntry.O : CellEntry.X;
+        turn = nextTurn(turn);
     }
 
 
-    //Methods that allows each cell in the tic-tac-toe grid to have its own unique identifier
-    public static String getGridPositionId(int row, int col) {
-        return String.valueOf(row * GRID_SIZE + col);
+    static CellEntry nextTurn(CellEntry currentTurn) {
+        return currentTurn == CellEntry.X ? CellEntry.O : CellEntry.X;
     }
 
 }

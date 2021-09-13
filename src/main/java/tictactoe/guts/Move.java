@@ -10,4 +10,8 @@ public record Move(CellEntry move, GridPosition position) {
         return position.col();
     }
 
+    public CellEntry nextTurn() {
+        return TicTacToeGame.nextTurn(move);
+    }
+
 }
