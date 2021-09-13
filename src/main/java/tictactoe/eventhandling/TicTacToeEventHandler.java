@@ -25,6 +25,6 @@ public class TicTacToeEventHandler extends EventHandler {
 
     @Override
     public void handleButton(ButtonClickEvent event) {
-        game.move(GridPosition.getGridPositionFromId(event.getComponentId()), () -> display.showMove(event));
+        game.move(GridPosition.getGridPositionFromId(event.getComponentId()), move -> display.showMove(event, move));
     }
 }

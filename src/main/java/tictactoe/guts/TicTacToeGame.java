@@ -22,8 +22,15 @@ public class TicTacToeGame {
         thenShow.accept(gameboard);
     }
 
-    public void move(GridPosition position, Runnable thenShow) {
-        thenShow.run();
+    public void move(GridPosition position, Consumer<? super Move> thenShow) {
+        gameboard.move(turn, position.row(), position.col());
+        Move move = new Move(turn, position);
+        switchTurns();
+        thenShow.accept(move);
+    }
+
+    private void switchTurns() {
+        turn = turn == CellEntry.X ? CellEntry.O : CellEntry.X;
     }
 
 
