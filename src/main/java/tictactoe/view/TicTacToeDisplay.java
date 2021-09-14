@@ -7,12 +7,15 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
 import tictactoe.guts.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TicTacToeDisplay {
 
@@ -47,45 +50,76 @@ public class TicTacToeDisplay {
         });
     }
 
+    public void showGameEnd(InteractionHook hook, GameEnd gameEnd, Runnable thenRun) {
+        if (gameEnd == null) {
+            thenRun.run();
+            return;
+        }
+
+        if (gameEnd.isDraw()) {
+            hook.editOriginal(createTicTacToeMessage(
+                    String.format("Tic-tac-toe against %s | Draw", hook.getInteraction().getMember().getAsMention()),
+                    ButtonStyle.PRIMARY
+            )).queue();
+            return;
+        }
+
+        hook.editOriginal(createTicTacToeMessage(
+                String.format("Tic-tac-toe against %s | %s",
+                        hook.getInteraction().getMember().getAsMention(),
+                        gameEnd.getWinner() == TicTacToeGame.START_MOVE ? "You win!" : "You lose"),
+                id -> gameEnd.getWinRowIds().contains(id),
+                ButtonStyle.SUCCESS,
+                ButtonStyle.SECONDARY
+        )).queue();
+    }
+
+
+
 
 
 
     private Message createTicTacToeMessage(String mainMessage) {
+        return createTicTacToeMessage(mainMessage, ButtonStyle.SECONDARY);
+    }
+
+    private Message createTicTacToeMessage(String mainMessage, ButtonStyle style) {
+        return createTicTacToeMessage(mainMessage, id -> false, null, style);
+    }
+
+    private Message createTicTacToeMessage(String mainMessage, Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
         MessageBuilder builder = new MessageBuilder(mainMessage);
 
-        builder.setActionRows(createActionRows());
+        builder.setActionRows(createActionRows(condition, successStyle, defaultStyle));
 
         return builder.build();
     }
 
-    private Collection<ActionRow> createActionRows() {
-        List<ActionRow> actionRows = new ArrayList<>(TicTacToeGame.GRID_SIZE);
+    private Collection<ActionRow> createActionRows(Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
+        return createButtons(condition, successStyle, defaultStyle).stream().map(ActionRow::of).collect(Collectors.toList());
+    }
 
+    private List<List<Component>> createButtons(Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
+        List<List<Component>> buttons = new ArrayList<>(TicTacToeGame.GRID_SIZE);
         for (int row = 0; row < TicTacToeGame.GRID_SIZE; row++) {
-            actionRows.add(createActionRow(row));
+            List<Component> buttonRow = new ArrayList<>(TicTacToeGame.GRID_SIZE);
+            for (int col = 0; col < TicTacToeGame.GRID_SIZE; col++) {
+                buttonRow.add(getButtonTypeIfElse(gameBoard.getEntry(row, col), GridPosition.getGridPositionId(row, col), condition, successStyle, defaultStyle));
+            }
+            buttons.add(buttonRow);
         }
-
-        return actionRows;
+        return buttons;
     }
 
-    private ActionRow createActionRow(int row) {
-        List<Component> buttons = new ArrayList<>(TicTacToeGame.GRID_SIZE);
 
-        for (int col = 0; col < TicTacToeGame.GRID_SIZE; col++) {
-            buttons.add(getButtonWithEntry(gameBoard.getEntry(row, col), row, col));
-        }
-
-        return ActionRow.of(buttons);
-    }
-
-    private static Button getButtonWithEntry(CellEntry entry, int row, int col) {
+    private static Button getButtonTypeIfElse(CellEntry entry, int id, Predicate<? super Integer> condition, ButtonStyle success, ButtonStyle fail) {
         return switch (entry) {
-            case X -> Button.secondary(GridPosition.getGridPositionId(row, col), Emoji.fromMarkdown(X_EMOJI));
-            case O -> Button.secondary(GridPosition.getGridPositionId(row, col), Emoji.fromMarkdown(O_EMOJI));
-            default -> Button.secondary(GridPosition.getGridPositionId(row, col), "\u200B");
+            case X -> Button.of(condition.test(id) ? success : fail, String.valueOf(id), Emoji.fromMarkdown(X_EMOJI));
+            case O -> Button.of(condition.test(id) ? success : fail, String.valueOf(id), Emoji.fromMarkdown(O_EMOJI));
+            default -> Button.of(condition.test(id) ? success : fail, String.valueOf(id), "\u200B");
         };
     }
-    
+
     private static String getEmojiStringFromEntry(CellEntry entry) {
         return switch (entry) {
             case X -> X_EMOJI;

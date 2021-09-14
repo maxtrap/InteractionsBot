@@ -52,16 +52,23 @@ public class MoveFactory {
         }
     }
 
-    public Show<Move> playerMove(String gridPositionId) {
-        Show<Move> moveAndShow = new Show<>(() -> game.playerMove(gridPositionId));
-        moveAndShows.add(moveAndShow);
-        return moveAndShow;
+    public Show<Move> playerMove(int gridPositionId) {
+        return addMoveAndShowToQueue(new Show<>(() -> game.playerMove(gridPositionId)));
     }
 
     public Show<Move> computerMove() {
-        Show<Move> moveAndShow = new Show<>(game::computerMove);
-        moveAndShows.add(moveAndShow);
-        return moveAndShow;
+        return addMoveAndShowToQueue(new Show<>(game::computerMove));
+    }
+
+    public Show<GameEnd> checkGameEnd() {
+        return addMoveAndShowToQueue(new Show<>(game::getGameEnd));
+    }
+
+
+
+    private <T> Show<T> addMoveAndShowToQueue(Show<T> show) {
+        moveAndShows.add(show);
+        return show;
     }
 
 

@@ -30,10 +30,14 @@ public class TicTacToeEventHandler extends EventHandler {
         InteractionHook hook = event.getHook();
 
         new MoveFactory(game)
-                .playerMove(event.getComponentId())
+                .playerMove(Integer.parseInt(event.getComponentId()))
                 .thenShowThenAsync((move, next) -> display.showMove(hook, move, next))
+                .checkGameEnd()
+                .thenShowThenAsync((gameEnd, next) -> display.showGameEnd(hook, gameEnd, next))
                 .computerMove()
                 .thenShow(move -> display.showMove(hook, move))
+                .checkGameEnd()
+                .thenShowThenAsync((gameEnd, next) -> display.showGameEnd(hook, gameEnd, next))
                 .move();
     }
 }
