@@ -67,8 +67,8 @@ public class TicTacToeDisplay {
         hook.editOriginal(createTicTacToeMessage(
                 String.format("Tic-tac-toe against %s | %s",
                         hook.getInteraction().getMember().getAsMention(),
-                        gameEnd.getWinner() == TicTacToeGame.START_MOVE ? "You win!" : "You lose"),
-                id -> gameEnd.getWinRowIds().contains(id),
+                        gameEnd.winner() == TicTacToeGame.START_MOVE ? "You win!" : "You lose"),
+                id -> gameEnd.winRowIds().contains(id),
                 ButtonStyle.SUCCESS,
                 ButtonStyle.SECONDARY
         )).queue();

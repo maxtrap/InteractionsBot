@@ -5,29 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class GameEnd {
-
-    private final boolean draw;
-    private final CellEntry winner;
-    private final Set<Integer> winRowIds;
-
-    private GameEnd(boolean draw, CellEntry winner, Set<Integer> winRowIds) {
-        this.draw = draw;
-        this.winner = winner;
-        this.winRowIds = winRowIds;
-    }
-
-    public boolean isDraw() {
-        return draw;
-    }
-
-    public CellEntry getWinner() {
-        return winner;
-    }
-
-    public Set<Integer> getWinRowIds() {
-        return winRowIds;
-    }
+public record GameEnd(boolean isDraw, CellEntry winner, Set<Integer> winRowIds) {
 
     static GameEnd getGameEnd(CellEntry[][] board, CellEntry turn) {
         //Check rows
