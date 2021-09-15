@@ -38,7 +38,7 @@ public class BotController {
         getTestServer()
                 .updateCommands()
                 .addCommands(
-                        new CommandData("tictactoe", "Play tic tac toe")
+                        new CommandData("tictactoe", "Play tic-tac-toe")
                 )
                 .queue();
     }

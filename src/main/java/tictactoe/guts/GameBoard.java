@@ -15,7 +15,9 @@ public class GameBoard {
 
     public void move(CellEntry move, int row, int col) {
         if (move == CellEntry.EMPTY)
-            throw new IllegalArgumentException("Must be a valid move. Move can't be empty since there is no undo moves.");
+            throw new IllegalArgumentException("Must be a valid move. Move cannot be empty since there is no undo moves.");
+        if (move == null)
+            throw new IllegalArgumentException("Move cannot be null");
 
         gameboard[row][col] = move;
     }

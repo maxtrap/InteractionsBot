@@ -8,8 +8,13 @@ import java.util.function.Supplier;
 
 public class MoveFactory {
 
-    private final TicTacToeGame game;
+    private TicTacToeGame game;
     private final Queue<Show<?>> moveAndShows;
+
+
+    public MoveFactory() {
+        this(null);
+    }
 
     public MoveFactory(TicTacToeGame game) {
         this.game = game;
@@ -50,6 +55,10 @@ public class MoveFactory {
         private void moveAndShowAsync() {
             thenShowThenAsync.accept(toShow.get(), MoveFactory.this::move);
         }
+    }
+
+    public Show<TicTacToeGame> startNewGame() {
+        return addMoveAndShowToQueue(new Show<>(() -> game = new TicTacToeGame()));
     }
 
     public Show<Move> playerMove(int gridPositionId) {

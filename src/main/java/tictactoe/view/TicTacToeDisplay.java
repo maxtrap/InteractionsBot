@@ -14,6 +14,7 @@ import tictactoe.guts.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -25,8 +26,13 @@ public class TicTacToeDisplay {
     private TicTacToeDisplay() {
     }
 
-    public static void showGameStart(SlashCommandEvent event, GameBoard gameBoard) {
-        event.reply(createTicTacToeMessage(gameBoard, String.format("Welcome %s to Tic-tac-toe! Press any button to start.", event.getMember().getAsMention()) )).queue();
+    public static void showGameStart(SlashCommandEvent event, TicTacToeGame game, Consumer<? super Long> messageIdConsumer) {
+        event.reply(createTicTacToeMessage(
+                        game.getGameboard(),
+                        String.format("Welcome %s to Tic-tac-toe! Press any button to start.", event.getMember().getAsMention())
+                ))
+                .flatMap(InteractionHook::retrieveOriginal)
+                .queue(message -> messageIdConsumer.accept(message.getIdLong()));
     }
 
 
