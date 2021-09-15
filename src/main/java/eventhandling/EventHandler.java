@@ -3,13 +3,13 @@ package eventhandling;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
-public abstract class EventHandler {
+public interface EventHandler {
 
-    public void handleSlash(SlashCommandEvent event) {
+    default void handleSlash(SlashCommandEvent event) {
         event.reply("This process isn't available right now :frowning:").setEphemeral(true).queue();
     }
 
-    public void handleButton(ButtonClickEvent event) {
+    default void handleButton(ButtonClickEvent event) {
         event.reply("This process isn't available right now :frowning:").setEphemeral(true).queue();
     }
 

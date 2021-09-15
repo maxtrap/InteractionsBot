@@ -12,7 +12,7 @@ import tictactoe.view.TicTacToeDisplay;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TicTacToeEventHandler extends EventHandler {
+public class TicTacToeEventHandler implements EventHandler {
 
     private record GameAndId(TicTacToeGame game, long messageId) {
     }
