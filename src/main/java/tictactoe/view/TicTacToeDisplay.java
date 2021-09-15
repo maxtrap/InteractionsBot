@@ -22,22 +22,22 @@ public class TicTacToeDisplay {
     public static final String X_EMOJI = "<:X_:886689752311550035>";
     public static final String O_EMOJI = "<:O_:886689771139788800>";
 
+    private TicTacToeDisplay() {
+    }
 
-    private final GameBoard gameBoard;
-
-    public TicTacToeDisplay(SlashCommandEvent event, GameBoard gameBoard) {
-        this.gameBoard = gameBoard;
-        event.reply(createTicTacToeMessage( String.format("Welcome %s to Tic-tac-toe! Press any button to start.", event.getMember().getAsMention()) )).queue();
+    public static void showGameStart(SlashCommandEvent event, GameBoard gameBoard) {
+        event.reply(createTicTacToeMessage(gameBoard, String.format("Welcome %s to Tic-tac-toe! Press any button to start.", event.getMember().getAsMention()) )).queue();
     }
 
 
-    public void showMove(InteractionHook hook, Move move) {
-        showMove(hook, move, null);
+    public static void showMove(InteractionHook hook, GameBoard gameBoard, Move move) {
+        showMove(hook, gameBoard, move, null);
     }
 
-    public void showMove(InteractionHook hook, Move move, Runnable thenRun) {
+    public static void showMove(InteractionHook hook, GameBoard gameBoard, Move move, Runnable thenRun) {
         hook.editOriginal(
                 createTicTacToeMessage(
+                        gameBoard,
                         String.format(
                                 "Playing tic-tac-toe against %s | Current turn: %s",
                                 hook.getInteraction().getMember().getAsMention(),
@@ -50,7 +50,7 @@ public class TicTacToeDisplay {
         });
     }
 
-    public void showGameEnd(InteractionHook hook, GameEnd gameEnd, Runnable thenRun) {
+    public static void showGameEnd(InteractionHook hook, GameBoard gameBoard, GameEnd gameEnd, Runnable thenRun) {
         if (gameEnd == null) {
             thenRun.run();
             return;
@@ -58,6 +58,7 @@ public class TicTacToeDisplay {
 
         if (gameEnd.isDraw()) {
             hook.editOriginal(createTicTacToeMessage(
+                    gameBoard,
                     String.format("Tic-tac-toe against %s | Draw", hook.getInteraction().getMember().getAsMention()),
                     ButtonStyle.PRIMARY
             )).queue();
@@ -65,6 +66,7 @@ public class TicTacToeDisplay {
         }
 
         hook.editOriginal(createTicTacToeMessage(
+                gameBoard,
                 String.format("Tic-tac-toe against %s | %s",
                         hook.getInteraction().getMember().getAsMention(),
                         gameEnd.winner() == TicTacToeGame.START_MOVE ? "You win!" : "You lose"),
@@ -79,27 +81,27 @@ public class TicTacToeDisplay {
 
 
 
-    private Message createTicTacToeMessage(String mainMessage) {
-        return createTicTacToeMessage(mainMessage, ButtonStyle.SECONDARY);
+    private static Message createTicTacToeMessage(GameBoard gameBoard, String mainMessage) {
+        return createTicTacToeMessage(gameBoard, mainMessage, ButtonStyle.SECONDARY);
     }
 
-    private Message createTicTacToeMessage(String mainMessage, ButtonStyle style) {
-        return createTicTacToeMessage(mainMessage, id -> false, null, style);
+    private static Message createTicTacToeMessage(GameBoard gameBoard, String mainMessage, ButtonStyle style) {
+        return createTicTacToeMessage(gameBoard, mainMessage, id -> false, null, style);
     }
 
-    private Message createTicTacToeMessage(String mainMessage, Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
+    private static Message createTicTacToeMessage(GameBoard gameBoard, String mainMessage, Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
         MessageBuilder builder = new MessageBuilder(mainMessage);
 
-        builder.setActionRows(createActionRows(condition, successStyle, defaultStyle));
+        builder.setActionRows(createActionRows(gameBoard, condition, successStyle, defaultStyle));
 
         return builder.build();
     }
 
-    private Collection<ActionRow> createActionRows(Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
-        return createButtons(condition, successStyle, defaultStyle).stream().map(ActionRow::of).collect(Collectors.toList());
+    private static Collection<ActionRow> createActionRows(GameBoard gameBoard, Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
+        return createButtons(gameBoard, condition, successStyle, defaultStyle).stream().map(ActionRow::of).collect(Collectors.toList());
     }
 
-    private List<List<Component>> createButtons(Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
+    private static List<List<Component>> createButtons(GameBoard gameBoard, Predicate<? super Integer> condition, ButtonStyle successStyle, ButtonStyle defaultStyle) {
         List<List<Component>> buttons = new ArrayList<>(TicTacToeGame.GRID_SIZE);
         for (int row = 0; row < TicTacToeGame.GRID_SIZE; row++) {
             List<Component> buttonRow = new ArrayList<>(TicTacToeGame.GRID_SIZE);

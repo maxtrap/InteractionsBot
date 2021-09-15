@@ -11,7 +11,6 @@ import tictactoe.view.TicTacToeDisplay;
 public class TicTacToeEventHandler extends EventHandler {
 
     private final TicTacToeGame game;
-    private TicTacToeDisplay display;
 
     public TicTacToeEventHandler() {
         game = new TicTacToeGame();
@@ -20,7 +19,7 @@ public class TicTacToeEventHandler extends EventHandler {
     @Override
     public void handleSlash(SlashCommandEvent event) {
         if (event.getName().equals("tictactoe")) {
-            game.startGame(gameBoard -> display = new TicTacToeDisplay(event, gameBoard));
+            game.startGame(gameBoard -> TicTacToeDisplay.showGameStart(event, gameBoard));
         }
     }
 
@@ -31,13 +30,13 @@ public class TicTacToeEventHandler extends EventHandler {
 
         new MoveFactory(game)
                 .playerMove(Integer.parseInt(event.getComponentId()))
-                .thenShowThenAsync((move, next) -> display.showMove(hook, move, next))
+                .thenShowThenAsync((move, next) -> TicTacToeDisplay.showMove(hook, null, move, next))
                 .checkGameEnd()
-                .thenShowThenAsync((gameEnd, next) -> display.showGameEnd(hook, gameEnd, next))
+                .thenShowThenAsync((gameEnd, next) -> TicTacToeDisplay.showGameEnd(hook, null, gameEnd, next))
                 .computerMove()
-                .thenShow(move -> display.showMove(hook, move))
+                .thenShow(move -> TicTacToeDisplay.showMove(hook, null, move))
                 .checkGameEnd()
-                .thenShowThenAsync((gameEnd, next) -> display.showGameEnd(hook, gameEnd, next))
+                .thenShowThenAsync((gameEnd, next) -> TicTacToeDisplay.showGameEnd(hook, null, gameEnd, next))
                 .move();
     }
 }
