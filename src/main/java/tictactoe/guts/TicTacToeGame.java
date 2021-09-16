@@ -5,11 +5,7 @@ import tictactoe.guts.gamestate.CellEntry;
 import tictactoe.guts.gamestate.GameBoard;
 import tictactoe.guts.gamestate.GameEnd;
 import tictactoe.guts.gamestate.GridPosition;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import tictactoe.guts.movealgorithms.*;
 
 public class TicTacToeGame {
 
@@ -18,10 +14,20 @@ public class TicTacToeGame {
 
     private final GameBoard gameboard;
     private CellEntry turn;
+    private MoveAlgorithm moveAlgorithm;
 
     public TicTacToeGame() {
         gameboard = new GameBoard();
+    }
+
+    public TicTacToeGame startGame(MoveAlgorithmOption algorithm) {
         turn = START_MOVE;
+        moveAlgorithm = switch (algorithm) {
+            case EASY -> new EasyAlgorithm();
+            case MEDIUM -> new MediumAlgorithm();
+            case IMPOSSIBLE -> new ImpossibleAlgorithm();
+        };
+        return this;
     }
 
     public boolean isMoveValid(int gridPositionId) {
@@ -37,22 +43,9 @@ public class TicTacToeGame {
     }
 
     public Move computerMove() {
-        List<Integer> possibleMoves = IntStream.range(0, TicTacToeGame.GRID_SIZE * TicTacToeGame.GRID_SIZE)
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
-        GridPosition move;
-        int index;
-        do {
-            if (possibleMoves.size() == 0)
-                throw new IllegalStateException("Computer cannot move as there are no possible moves");
-            index = (int) (Math.random() * possibleMoves.size());
-            move = GridPosition.getGridPositionFromId(possibleMoves.get(index));
-            possibleMoves.remove(index);
-        } while (gameboard.getEntry(move) != CellEntry.EMPTY);
-
-        gameboard.move(turn, move.row(), move.col());
+        Move compMove = moveAlgorithm.getMove(turn, gameboard);
         switchTurns();
-        return new Move(turn, gameboard);
+        return compMove;
     }
 
     public GameBoard getGameboard() {

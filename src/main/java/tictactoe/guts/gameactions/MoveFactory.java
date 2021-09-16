@@ -2,6 +2,7 @@ package tictactoe.guts.gameactions;
 
 import tictactoe.guts.TicTacToeGame;
 import tictactoe.guts.gamestate.GameEnd;
+import tictactoe.guts.movealgorithms.MoveAlgorithmOption;
 
 import java.util.ArrayDeque;
 import java.util.Objects;
@@ -9,21 +10,17 @@ import java.util.Queue;
 
 public class MoveFactory {
 
-    private TicTacToeGame game;
+    private final TicTacToeGame game;
     private final Queue<Showable<?>> moveAndShows;
 
-
-    public MoveFactory() {
-        this(null);
-    }
 
     public MoveFactory(TicTacToeGame game) {
         this.game = game;
         moveAndShows = new ArrayDeque<>();
     }
 
-    public Show<TicTacToeGame> startNewGame() {
-        return (Show<TicTacToeGame>) addMoveAndShowToQueue(new Show<>(this, () -> game = new TicTacToeGame()));
+    public Show<TicTacToeGame> startNewGame(MoveAlgorithmOption algorithm) {
+        return (Show<TicTacToeGame>) addMoveAndShowToQueue(new Show<>(this, () -> game.startGame(algorithm)));
     }
 
     public ShowBreakChain<Void> checkIfValidMove(int gridPositionId) {
