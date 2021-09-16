@@ -23,6 +23,10 @@ public class MoveFactory {
         return (Show<TicTacToeGame>) addMoveAndShowToQueue(new Show<>(this, () -> game = new TicTacToeGame()));
     }
 
+    public ShowBreakChain<Void> checkIfValidMove(int gridPositionId) {
+        return (ShowBreakChain<Void>) addMoveAndShowToQueue(new ShowBreakChain<Void>(this, () -> null, unused -> !game.isMoveValid(gridPositionId)));
+    }
+
     public Show<Move> playerMove(int gridPositionId) {
         return (Show<Move>) addMoveAndShowToQueue(new Show<>(this, () -> game.playerMove(gridPositionId)));
     }

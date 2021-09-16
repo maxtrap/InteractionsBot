@@ -4,12 +4,14 @@ import eventhandling.EventHandler;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import tictactoe.guts.GameEnd;
 import tictactoe.guts.MoveFactory;
 import tictactoe.guts.TicTacToeGame;
 import tictactoe.view.TicTacToeDisplay;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class TicTacToeEventHandler implements EventHandler {
 
@@ -39,30 +41,39 @@ public class TicTacToeEventHandler implements EventHandler {
 
     @Override
     public void handleButton(ButtonClickEvent event) {
-        if (!userIdToGameAndId.containsKey(event.getUser().getIdLong())) {
-            event.reply("Someone else is playing this game or it has already ended. Type /tictactoe to start your own game.").setEphemeral(true).queue();
+        long userId = event.getUser().getIdLong();
+        if (!userIdToGameAndId.containsKey(userId)) {
+            event.reply("This game has already ended or someone else is playing it. Type /tictactoe to start your own game.").setEphemeral(true).queue();
             return;
         }
 
-        if (event.getMessageIdLong() != userIdToGameAndId.get(event.getUser().getIdLong()).messageId()) {
-            event.reply("Someone else is playing this game or it has already ended.").setEphemeral(true).queue();
+        if (event.getMessageIdLong() != userIdToGameAndId.get(userId).messageId()) {
+            event.reply("This game has already ended or someone else is playing it.").setEphemeral(true).queue();
             return;
         }
 
         event.deferEdit().queue();
         InteractionHook hook = event.getHook();
 
-        TicTacToeGame game = userIdToGameAndId.get(event.getUser().getIdLong()).game();
+        TicTacToeGame game = userIdToGameAndId.get(userId).game();
+
+        int playerMove = Integer.parseInt(event.getComponentId());
+        Consumer<GameEnd> showGameEnd = gameEnd -> {
+            TicTacToeDisplay.showGameEnd(hook, gameEnd);
+            userIdToGameAndId.remove(userId);
+        };
 
         new MoveFactory(game)
-                .playerMove(Integer.parseInt(event.getComponentId()))
+                .checkIfValidMove(playerMove)
+                .thenShowBreakChain(unused -> {})
+                .playerMove(playerMove)
                 .thenShowThenAsync((move, next) -> TicTacToeDisplay.showMove(hook, move, next))
                 .checkGameEnd()
-                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameEnd))
+                .thenShowBreakChain(showGameEnd)
                 .computerMove()
                 .thenShow(move -> TicTacToeDisplay.showMove(hook, move))
                 .checkGameEnd()
-                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameEnd))
+                .thenShowBreakChain(showGameEnd)
                 .move();
     }
 }

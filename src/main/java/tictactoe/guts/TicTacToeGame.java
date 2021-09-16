@@ -18,6 +18,11 @@ public class TicTacToeGame {
         turn = START_MOVE;
     }
 
+    public boolean isMoveValid(int gridPositionId) {
+        GridPosition position = GridPosition.getGridPositionFromId(gridPositionId);
+        return gameboard.getEntry(position.row(), position.col()) == CellEntry.EMPTY;
+    }
+
     public Move playerMove(int gridPositionId) {
         GridPosition position = GridPosition.getGridPositionFromId(gridPositionId);
         gameboard.move(turn, position.row(), position.col());
