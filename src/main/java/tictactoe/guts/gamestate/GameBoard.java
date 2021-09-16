@@ -1,4 +1,6 @@
-package tictactoe.guts;
+package tictactoe.guts.gamestate;
+
+import tictactoe.guts.TicTacToeGame;
 
 import java.util.Arrays;
 
@@ -30,7 +32,7 @@ public class GameBoard {
         return gameboard[position.row()][position.col()];
     }
 
-    GameEnd getGameEnd(CellEntry turn) {
+    public GameEnd getGameEnd(CellEntry turn) {
         return GameEnd.getGameEnd(this, turn);
     }
 

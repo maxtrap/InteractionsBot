@@ -1,4 +1,4 @@
-package tictactoe.guts;
+package tictactoe.guts.gameactions;
 
 import java.util.function.Supplier;
 

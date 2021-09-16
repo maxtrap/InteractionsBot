@@ -1,5 +1,11 @@
 package tictactoe.guts;
 
+import tictactoe.guts.gameactions.Move;
+import tictactoe.guts.gamestate.CellEntry;
+import tictactoe.guts.gamestate.GameBoard;
+import tictactoe.guts.gamestate.GameEnd;
+import tictactoe.guts.gamestate.GridPosition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +19,7 @@ public class TicTacToeGame {
     private final GameBoard gameboard;
     private CellEntry turn;
 
-    TicTacToeGame() {
+    public TicTacToeGame() {
         gameboard = new GameBoard();
         turn = START_MOVE;
     }

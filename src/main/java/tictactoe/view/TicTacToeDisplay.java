@@ -10,6 +10,11 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
 import tictactoe.guts.*;
+import tictactoe.guts.gameactions.Move;
+import tictactoe.guts.gamestate.CellEntry;
+import tictactoe.guts.gamestate.GameBoard;
+import tictactoe.guts.gamestate.GameEnd;
+import tictactoe.guts.gamestate.GridPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;

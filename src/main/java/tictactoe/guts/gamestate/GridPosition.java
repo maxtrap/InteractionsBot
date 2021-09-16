@@ -1,4 +1,6 @@
-package tictactoe.guts;
+package tictactoe.guts.gamestate;
+
+import tictactoe.guts.TicTacToeGame;
 
 public record GridPosition(int row, int col) {
 

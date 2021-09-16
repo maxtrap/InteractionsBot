@@ -1,4 +1,6 @@
-package tictactoe.guts;
+package tictactoe.guts.gamestate;
+
+import tictactoe.guts.TicTacToeGame;
 
 import java.util.Arrays;
 import java.util.Set;

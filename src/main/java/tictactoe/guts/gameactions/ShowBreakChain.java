@@ -1,4 +1,4 @@
-package tictactoe.guts;
+package tictactoe.guts.gameactions;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;

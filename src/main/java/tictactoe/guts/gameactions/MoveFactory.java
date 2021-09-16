@@ -1,4 +1,7 @@
-package tictactoe.guts;
+package tictactoe.guts.gameactions;
+
+import tictactoe.guts.TicTacToeGame;
+import tictactoe.guts.gamestate.GameEnd;
 
 import java.util.ArrayDeque;
 import java.util.Objects;

@@ -4,8 +4,8 @@ import eventhandling.EventHandler;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import tictactoe.guts.GameEnd;
-import tictactoe.guts.MoveFactory;
+import tictactoe.guts.gamestate.GameEnd;
+import tictactoe.guts.gameactions.MoveFactory;
 import tictactoe.guts.TicTacToeGame;
 import tictactoe.view.TicTacToeDisplay;
 
