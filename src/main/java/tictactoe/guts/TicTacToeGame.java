@@ -16,9 +16,8 @@ public class TicTacToeGame {
     public Move playerMove(int gridPositionId) {
         GridPosition position = GridPosition.getGridPositionFromId(gridPositionId);
         gameboard.move(turn, position.row(), position.col());
-        Move move = new Move(turn, position);
         switchTurns();
-        return move;
+        return new Move(turn, gameboard);
     }
 
     public Move computerMove() {
@@ -30,9 +29,8 @@ public class TicTacToeGame {
         } while (gameboard.getEntry(r, c) != CellEntry.EMPTY);
 
         gameboard.move(turn, r, c);
-        Move move = new Move(turn, new GridPosition(r, c));
         switchTurns();
-        return move;
+        return new Move(turn, gameboard);
     }
 
     public GameBoard getGameboard() {

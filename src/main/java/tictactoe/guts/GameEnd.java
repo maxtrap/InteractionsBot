@@ -5,13 +5,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public record GameEnd(boolean isDraw, CellEntry winner, Set<Integer> winRowIds) {
+public record GameEnd(GameBoard gameBoard, boolean isDraw, CellEntry winner, Set<Integer> winRowIds) {
 
-    static GameEnd getGameEnd(CellEntry[][] board, CellEntry turn) {
+    static GameEnd getGameEnd(GameBoard gameBoard, CellEntry turn) {
+        CellEntry[][] board = gameBoard.getGameboardArray();
+
         //Check rows
         for (int row = 0; row < TicTacToeGame.GRID_SIZE; row++) {
             if (Arrays.stream(board[row]).allMatch(entry -> entry == turn)) {
-                return new GameEnd(false, turn, getRowIds(row));
+                return new GameEnd(gameBoard, false, turn, getRowIds(row));
             }
         }
 
@@ -22,7 +24,7 @@ public record GameEnd(boolean isDraw, CellEntry winner, Set<Integer> winRowIds) 
                 if (board[row][col] != turn)
                     continue checkColumns;
             }
-            return new GameEnd(false, turn, getColIds(col));
+            return new GameEnd(gameBoard, false, turn, getColIds(col));
         }
 
         //Check main diagonal
@@ -30,7 +32,7 @@ public record GameEnd(boolean isDraw, CellEntry winner, Set<Integer> winRowIds) 
                 .mapToObj(i -> board[i][i])
                 .allMatch(entry -> entry == turn)) {
 
-            return new GameEnd(false, turn,
+            return new GameEnd(gameBoard, false, turn,
                     IntStream.range(0, TicTacToeGame.GRID_SIZE)
                             .map(id -> id * (TicTacToeGame.GRID_SIZE + 1))
                             .boxed()
@@ -43,7 +45,7 @@ public record GameEnd(boolean isDraw, CellEntry winner, Set<Integer> winRowIds) 
                 .mapToObj(i -> board[i][TicTacToeGame.GRID_SIZE - 1 - i])
                 .allMatch(entry -> entry == turn)) {
 
-            return new GameEnd(false, turn,
+            return new GameEnd(gameBoard, false, turn,
                     IntStream.rangeClosed(1, TicTacToeGame.GRID_SIZE)
                             .map(id -> id * TicTacToeGame.GRID_SIZE - id)
                             .boxed()
@@ -53,7 +55,7 @@ public record GameEnd(boolean isDraw, CellEntry winner, Set<Integer> winRowIds) 
 
         //Check draw
         if (Arrays.stream(board).flatMap(Arrays::stream).noneMatch(entry -> entry == CellEntry.EMPTY)) {
-            return new GameEnd(true, null, null);
+            return new GameEnd(gameBoard, true, null, null);
         }
 
         return null;
