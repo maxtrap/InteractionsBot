@@ -4,7 +4,6 @@ import eventhandling.EventHandler;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import tictactoe.guts.GameBoard;
 import tictactoe.guts.MoveFactory;
 import tictactoe.guts.TicTacToeGame;
 import tictactoe.view.TicTacToeDisplay;
@@ -54,17 +53,16 @@ public class TicTacToeEventHandler implements EventHandler {
         InteractionHook hook = event.getHook();
 
         TicTacToeGame game = userIdToGameAndId.get(event.getUser().getIdLong()).game();
-        GameBoard gameBoard = game.getGameboard();
 
         new MoveFactory(game)
                 .playerMove(Integer.parseInt(event.getComponentId()))
-                .thenShowThenAsync((move, next) -> TicTacToeDisplay.showMove(hook, gameBoard, move, next))
+                .thenShowThenAsync((move, next) -> TicTacToeDisplay.showMove(hook, move, next))
                 .checkGameEnd()
-                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameBoard, gameEnd))
+                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameEnd))
                 .computerMove()
-                .thenShow(move -> TicTacToeDisplay.showMove(hook, gameBoard, move))
+                .thenShow(move -> TicTacToeDisplay.showMove(hook, move))
                 .checkGameEnd()
-                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameBoard, gameEnd))
+                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameEnd))
                 .move();
     }
 }

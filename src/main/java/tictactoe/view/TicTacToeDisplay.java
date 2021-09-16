@@ -36,14 +36,14 @@ public class TicTacToeDisplay {
     }
 
 
-    public static void showMove(InteractionHook hook, GameBoard gameBoard, Move move) {
-        showMove(hook, gameBoard, move, null);
+    public static void showMove(InteractionHook hook, Move move) {
+        showMove(hook, move, null);
     }
 
-    public static void showMove(InteractionHook hook, GameBoard gameBoard, Move move, Runnable thenRun) {
+    public static void showMove(InteractionHook hook, Move move, Runnable thenRun) {
         hook.editOriginal(
                 createTicTacToeMessage(
-                        gameBoard,
+                        move.gameBoard(),
                         String.format(
                                 "Playing tic-tac-toe against %s | Current turn: %s",
                                 hook.getInteraction().getMember().getAsMention(),
@@ -56,10 +56,10 @@ public class TicTacToeDisplay {
         });
     }
 
-    public static void showGameEnd(InteractionHook hook, GameBoard gameBoard, GameEnd gameEnd) {
+    public static void showGameEnd(InteractionHook hook, GameEnd gameEnd) {
         if (gameEnd.isDraw()) {
             hook.editOriginal(createTicTacToeMessage(
-                    gameBoard,
+                    gameEnd.gameBoard(),
                     String.format("Tic-tac-toe against %s | Draw", hook.getInteraction().getMember().getAsMention()),
                     ButtonStyle.PRIMARY
             )).queue();
@@ -67,11 +67,11 @@ public class TicTacToeDisplay {
         }
 
         hook.editOriginal(createTicTacToeMessage(
-                gameBoard,
+                gameEnd.gameBoard(),
                 String.format("Tic-tac-toe against %s | %s",
                         hook.getInteraction().getMember().getAsMention(),
                         gameEnd.winner() == TicTacToeGame.START_MOVE ? "You win!" : "You lose"),
-                id -> gameEnd.winRowIds().contains(id),
+                gameEnd.winRowIds()::contains,
                 ButtonStyle.SUCCESS,
                 ButtonStyle.SECONDARY
         )).queue();

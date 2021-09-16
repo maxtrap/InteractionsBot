@@ -29,6 +29,10 @@ public class GameBoard {
     }
 
     GameEnd getGameEnd(CellEntry turn) {
-        return GameEnd.getGameEnd(gameboard, turn);
+        return GameEnd.getGameEnd(this, turn);
+    }
+
+    CellEntry[][] getGameboardArray() {
+        return gameboard;
     }
 }
