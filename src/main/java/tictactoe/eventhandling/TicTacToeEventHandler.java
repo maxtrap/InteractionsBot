@@ -34,6 +34,11 @@ public class TicTacToeEventHandler implements EventHandler {
             }
 
             TicTacToeDisplay.showPreGame(event, messageId -> userIdToGameAndId.put(event.getUser().getIdLong(), new GameAndId(new TicTacToeGame(), messageId)));
+
+//            new MoveFactory()
+//                    .startNewGame()
+//                    .thenShow(game -> TicTacToeDisplay.showGameStart(event, game, messageId -> userIdToGameAndId.put(event.getUser().getIdLong(), new GameAndId(game, messageId))))
+//                    .move();
         }
     }
 
