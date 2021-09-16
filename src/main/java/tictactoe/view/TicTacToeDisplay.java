@@ -56,12 +56,7 @@ public class TicTacToeDisplay {
         });
     }
 
-    public static void showGameEnd(InteractionHook hook, GameBoard gameBoard, GameEnd gameEnd, Runnable thenRun) {
-        if (gameEnd == null) {
-            thenRun.run();
-            return;
-        }
-
+    public static void showGameEnd(InteractionHook hook, GameBoard gameBoard, GameEnd gameEnd) {
         if (gameEnd.isDraw()) {
             hook.editOriginal(createTicTacToeMessage(
                     gameBoard,

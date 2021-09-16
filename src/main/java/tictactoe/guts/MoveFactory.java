@@ -1,12 +1,13 @@
 package tictactoe.guts;
 
 import java.util.ArrayDeque;
+import java.util.Objects;
 import java.util.Queue;
 
 public class MoveFactory {
 
     private TicTacToeGame game;
-    private final Queue<Show<?>> moveAndShows;
+    private final Queue<Showable<?>> moveAndShows;
 
 
     public MoveFactory() {
@@ -19,24 +20,24 @@ public class MoveFactory {
     }
 
     public Show<TicTacToeGame> startNewGame() {
-        return addMoveAndShowToQueue(new Show<>(this, () -> game = new TicTacToeGame()));
+        return (Show<TicTacToeGame>) addMoveAndShowToQueue(new Show<>(this, () -> game = new TicTacToeGame()));
     }
 
     public Show<Move> playerMove(int gridPositionId) {
-        return addMoveAndShowToQueue(new Show<>(this, () -> game.playerMove(gridPositionId)));
+        return (Show<Move>) addMoveAndShowToQueue(new Show<>(this, () -> game.playerMove(gridPositionId)));
     }
 
     public Show<Move> computerMove() {
-        return addMoveAndShowToQueue(new Show<>(this, game::computerMove));
+        return (Show<Move>) addMoveAndShowToQueue(new Show<>(this, game::computerMove));
     }
 
-    public Show<GameEnd> checkGameEnd() {
-        return addMoveAndShowToQueue(new Show<>(this, game::getGameEnd));
+    public ShowBreakChain<GameEnd> checkGameEnd() {
+        return (ShowBreakChain<GameEnd>) addMoveAndShowToQueue(new ShowBreakChain<>(this, game::getGameEnd, Objects::nonNull));
     }
 
 
 
-    private <T> Show<T> addMoveAndShowToQueue(Show<T> show) {
+    private <T> Showable<T> addMoveAndShowToQueue(Showable<T> show) {
         moveAndShows.add(show);
         return show;
     }
@@ -44,9 +45,9 @@ public class MoveFactory {
 
 
     public void move() {
-        Show<?> nextShow;
+        Showable<?> nextShow;
         while ((nextShow = moveAndShows.poll()) != null) {
-            nextShow.getToShow();
+            nextShow.getAndShow();
             if (nextShow.isBreakChain())
                 return;
         }

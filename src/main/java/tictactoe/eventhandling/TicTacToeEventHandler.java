@@ -60,11 +60,11 @@ public class TicTacToeEventHandler implements EventHandler {
                 .playerMove(Integer.parseInt(event.getComponentId()))
                 .thenShowThenAsync((move, next) -> TicTacToeDisplay.showMove(hook, gameBoard, move, next))
                 .checkGameEnd()
-                .thenShowThenAsync((gameEnd, next) -> TicTacToeDisplay.showGameEnd(hook, gameBoard, gameEnd, next))
+                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameBoard, gameEnd))
                 .computerMove()
                 .thenShow(move -> TicTacToeDisplay.showMove(hook, gameBoard, move))
                 .checkGameEnd()
-                .thenShowThenAsync((gameEnd, next) -> TicTacToeDisplay.showGameEnd(hook, gameBoard, gameEnd, next))
+                .thenShowBreakChain(gameEnd -> TicTacToeDisplay.showGameEnd(hook, gameBoard, gameEnd))
                 .move();
     }
 }
