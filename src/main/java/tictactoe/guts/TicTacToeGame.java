@@ -1,5 +1,10 @@
 package tictactoe.guts;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class TicTacToeGame {
 
     public static final int GRID_SIZE = 3; //The size of tic-tac-toe grid. Standard is 3x3, which is why this value should be 3
@@ -21,14 +26,20 @@ public class TicTacToeGame {
     }
 
     public Move computerMove() {
-        int r;
-        int c;
+        List<Integer> possibleMoves = IntStream.range(0, TicTacToeGame.GRID_SIZE * TicTacToeGame.GRID_SIZE)
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
+        GridPosition move;
+        int index;
         do {
-            r = (int) (Math.random() * GRID_SIZE);
-            c = (int) (Math.random() * GRID_SIZE);
-        } while (gameboard.getEntry(r, c) != CellEntry.EMPTY);
+            if (possibleMoves.size() == 0)
+                throw new IllegalStateException("Computer cannot move as there are no possible moves");
+            index = (int) (Math.random() * possibleMoves.size());
+            move = GridPosition.getGridPositionFromId(possibleMoves.get(index));
+            possibleMoves.remove(index);
+        } while (gameboard.getEntry(move) != CellEntry.EMPTY);
 
-        gameboard.move(turn, r, c);
+        gameboard.move(turn, move.row(), move.col());
         switchTurns();
         return new Move(turn, gameboard);
     }

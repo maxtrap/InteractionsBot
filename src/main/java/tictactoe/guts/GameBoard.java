@@ -22,10 +22,12 @@ public class GameBoard {
         gameboard[row][col] = move;
     }
 
-
-
     public CellEntry getEntry(int row, int col) {
         return gameboard[row][col];
+    }
+
+    public CellEntry getEntry(GridPosition position) {
+        return gameboard[position.row()][position.col()];
     }
 
     GameEnd getGameEnd(CellEntry turn) {
